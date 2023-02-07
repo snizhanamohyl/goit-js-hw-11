@@ -1,6 +1,7 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+
 import PhotosApiService from './js/PhotoApiService';
 import LoadMoreBtn from './js/LoadMoreBtn';
 
@@ -17,70 +18,96 @@ let gallery = new SimpleLightbox('.gallery a');
 refs.form.addEventListener('submit', onSearch);
 loadMoreBtn.btnEl.addEventListener('click', onLoadMore);
 
-function onSearch(e) {
+async function onSearch(e) {
   e.preventDefault();
 
   clearGallery();
 
-  photosApiService.query = e.currentTarget.searchQuery.value;
-
   loadMoreBtn.hide();
 
+  photosApiService.query = e.currentTarget.searchQuery.value;
   photosApiService.resetPage();
 
-  photosApiService
-    .fetchPhotos()
-    .then(data => {
-      if (data.hits.length === 0) {
-        Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      } else {
-        Notify.info(`Hooray! We found ${data.totalHits} images.`);
+  try {
+    const photos = await photosApiService.fetchPhotos();
 
-        appendPhotosMarkup(createMarkup(data.hits));
+    if (photos.hits.length === 0) {
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
+    }
 
-        if (!onTheEndOfCollection()) {
-          loadMoreBtn.show();
-          loadMoreBtn.enable();
-        }
-      }
-    })
-    .then(makeSmoothScrollEffect);
+    Notify.success(`Hooray! We found ${photos.totalHits} images.`);
 
-  e.currentTarget.reset();
+    appendPhotosMarkup(createMarkup(photos.hits));
+
+    if (photosApiService.numberOfLoadedPhotos < photosApiService.totalHits) {
+      loadMoreBtn.show();
+      loadMoreBtn.enable();
+    }
+
+    makeSmoothScrollEffect();
+  } catch (error) {
+    console.log(error.message);
+  } finally {
+    e.target.reset();
+  }
+
+  //   photosApiService
+  //     .fetchPhotos()
+  //     .then(data => {
+  //       if (data.hits.length === 0) {
+  //         Notify.failure(
+  //           'Sorry, there are no images matching your search query. Please try again.'
+  //         );
+  //       } else {
+  //         Notify.info(`Hooray! We found ${data.totalHits} images.`);
+
+  //         appendPhotosMarkup(createMarkup(data.hits));
+
+  //         if (!onTheEndOfCollection()) {
+  //           loadMoreBtn.show();
+  //           loadMoreBtn.enable();
+  //         }
+  //       }
+  //     })
+  //     .then(makeSmoothScrollEffect);
+
+  //   e.currentTarget.reset();
 }
 
 function clearGallery() {
   refs.gallery.innerHTML = '';
 }
 
-function onLoadMore() {
-  if (onTheEndOfCollection()) {
+async function onLoadMore() {
+  if (photosApiService.numberOfLoadedPhotos >= photosApiService.totalHits) {
+    loadMoreBtn.hide();
+    Notify.info("We're sorry, but you've reached the end of search results.");
     return;
   }
 
   loadMoreBtn.disable();
 
-  photosApiService
-    .fetchPhotos()
-    .then(data => {
-      appendPhotosMarkup(createMarkup(data.hits));
-      loadMoreBtn.enable();
-    })
-    .then(makeSmoothScrollEffect);
-}
+  try {
+    const photos = await photosApiService.fetchPhotos();
 
-function onTheEndOfCollection() {
-  const isTheEndOfCollection =
-    photosApiService.numberOfLoadedPhotos >= photosApiService.totalHits;
+    appendPhotosMarkup(createMarkup(photos.hits));
+    loadMoreBtn.enable();
 
-  if (isTheEndOfCollection) {
-    loadMoreBtn.hide();
-    Notify.info("We're sorry, but you've reached the end of search results.");
+    makeSmoothScrollEffect();
+  } catch (error) {
+    console.log(error.message);
   }
 
-  return isTheEndOfCollection;
+  //   photosApiService
+  //     .fetchPhotos()
+  //     .then(data => {
+  //       appendPhotosMarkup(createMarkup(data.hits));
+  //       loadMoreBtn.enable();
+  //     })
+  //     .then(makeSmoothScrollEffect);
 }
 
 function makeSmoothScrollEffect() {
