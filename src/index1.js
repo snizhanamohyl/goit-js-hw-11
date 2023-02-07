@@ -46,8 +46,6 @@ async function onSearch(e) {
       loadMoreBtn.show();
       loadMoreBtn.enable();
     }
-
-    makeSmoothScrollEffect();
   } catch (error) {
     console.log(error.message);
   } finally {
