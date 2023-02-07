@@ -1,0 +1,95 @@
+body {
+    margin: 0;
+    font-family: 'Roboto';
+    text-align: center;
+    line-height: 16px;
+    letter-spacing: 0.04em;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.hidden {
+    display: none;
+}
+
+.search-form {
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.872);
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-form input, .search-form button, .load-more {
+    padding: 8 12px;
+    border: none;
+    font-size: 18px;
+}
+
+.search-form input {
+    border-radius: 4px 0 0 4px;
+}
+
+.search-form button {
+    border-radius: 0 4px 4px 0;
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    align-items:stretch;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.photo-link {
+    width: calc((100% - 64px) / 4);
+    
+    box-shadow: 3px 2px 4px 1px rgba(0, 0, 0, 0.24);
+    border-radius: 4px;
+}
+
+.photo-link:not(:nth-child(4n)) {
+    margin-right: 8px;
+}
+
+.photo-link:not(:nth-last-child(-n + 4)) {
+    margin-bottom: 16px;
+}
+
+
+.photo-link:hover {
+    cursor: pointer;
+    box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.24);
+}
+
+.photo-card {
+    width: 100%;
+}
+
+.info {
+    display: flex;
+    justify-content: space-around;
+    font-size: 12px;
+    flex-basis: 1;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.photo {
+    width: 100%;
+}
+
+.load-more {
+    background-color: rgba(0, 0, 0, 0.872);
+    color: rgba(255, 255, 255, 0.845);
+    border-radius: 8px;
+}
