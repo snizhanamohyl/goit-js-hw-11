@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    padding-bottom: 30px;
     font-family: 'Roboto';
     text-align: center;
     line-height: 16px;
@@ -48,6 +49,7 @@ a {
 
 .photo-link {
     width: calc((100% - 64px) / 4);
+    margin-bottom: 16px;
     
     box-shadow: 3px 2px 4px 1px rgba(0, 0, 0, 0.24);
     border-radius: 4px;
@@ -56,11 +58,6 @@ a {
 .photo-link:not(:nth-child(4n)) {
     margin-right: 8px;
 }
-
-.photo-link:not(:nth-last-child(-n + 4)) {
-    margin-bottom: 16px;
-}
-
 
 .photo-link:hover {
     cursor: pointer;
@@ -90,6 +87,15 @@ a {
 
 .load-more {
     background-color: rgba(0, 0, 0, 0.872);
-    color: rgba(255, 255, 255, 0.845);
+    color: rgb(255, 255, 255);
     border-radius: 8px;
+}
+
+.load-more:hover {
+    cursor: pointer;
+}
+
+.load-more:disabled {
+    background-color: rgba(0, 0, 0, 0.219);
+    cursor:auto;
 }
